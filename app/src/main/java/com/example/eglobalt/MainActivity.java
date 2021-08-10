@@ -9,6 +9,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
+import com.example.eglobalt.conexion.Conexion;
+import com.example.eglobalt.entidades.Transactions;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sqlThread.start();
+
         piechart = (PieChartView) findViewById(R.id.chart);
         autoCompleteTextView = (AutoCompleteTextView)  findViewById(R.id.autoCompleteTextView);
 
@@ -63,4 +69,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    Thread sqlThread = new Thread() {
+        public void run() {
+            try {
+                Conexion conect = new Conexion();
+                if (conect.conectar()) {
+                    System.out.println("Conexion exitosa!!!");
+                    List<Transactions> consulta = new ArrayList<>();
+                    consulta = conect.obtener("Select * from transactions where id=7077659");
+                    for (int i = 0; i < consulta.size(); i++) {
+                        System.err.println("Status:"+consulta.get(i).getStatus()+"Id:"
+                                +consulta.get(i).getId());
+                    }
+                    conect.desconectar();
+                } else {
+                    System.out.println("Ocurrio un error:" + conect.getMensajeError());
+                }
+            } catch (Exception se) {
+                System.out.println("oops! No se puede conectar. Error: " + se.toString());
+            }
+        }
+    };
 }
