@@ -70,13 +70,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     Thread sqlThread = new Thread() {
+        @Override
         public void run() {
             try {
                 Conexion conect = new Conexion();
                 if (conect.conectar()) {
                     System.out.println("Conexion exitosa!!!");
                     List<Transactions> consulta = new ArrayList<>();
-                    consulta = conect.obtener("Select * from transactions where id=7077659");
+                    consulta = conect.obtener("Select * from transactions where id=7005738");
                     for (int i = 0; i < consulta.size(); i++) {
                         System.err.println("Status:"+consulta.get(i).getStatus()+"Id:"
                                 +consulta.get(i).getId());
